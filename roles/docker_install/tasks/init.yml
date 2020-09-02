@@ -1,0 +1,31 @@
+- name: close selinux
+  shell: "sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config"
+
+- name: close selinux
+  shell: "setenforce 0"
+
+- name: close firewalld 
+  service: name=firewalld state=stopped enabled=no
+  
+- name: close swap
+  shell: "swapoff -a && sed -i '/swap/s/^\\(.*\\)$/#\\1/g' /etc/fstab"
+
+- name: install software
+  yum:
+    name:
+    - vim
+    - net-tools
+    - wget
+    - curl
+    - unzip
+    - git
+    - iptables
+
+- name: copy kubernetes config
+  template: src=kubernetes.conf dest=/etc/sysctl.d/kubernetes.conf
+
+- name: load br_netfilter
+  shell: "modprobe br_netfilter"
+    
+- name: reload k8s.config
+  shell: "sysctl -p /etc/sysctl.d/kubernetes.conf"

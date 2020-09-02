@@ -1,0 +1,19 @@
+- hosts: all
+  remote_user: root
+  roles:
+    - docker_install
+
+- hosts: master
+  remote_user: root
+  roles:
+    - master_init
+
+- hosts: node
+  remote_user: root
+  roles:
+    - node_init
+  
+- hosts: master
+  remote_user: root
+  roles:
+    - network_init

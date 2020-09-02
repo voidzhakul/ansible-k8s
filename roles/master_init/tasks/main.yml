@@ -1,0 +1,21 @@
+- name: copy kubeadm config
+  template: src=kubeadm-config.yml dest=/root/k8s/
+
+- name: pull image
+  shell: "kubeadm config images pull --config /root/k8s/kubeadm-config.yml"
+
+- name: init k8s
+  shell: "kubeadm init --config=/root/k8s/kubeadm-config.yml --upload-certs &> /root/k8s/token"
+
+- name: get node cert
+  shell: "grep -A1 'kubeadm join' /root/k8s/token |tail -2 > /node.sh"
+
+- name: distribution node.sh
+  shell: "ansible node -m copy -a 'src=/node.sh dest=/root/k8s/ mode=0755'"
+
+- name: creat $HOME/.kube 
+  file: name=$HOME/.kube state=directory
+  
+- name: copy kube config
+  copy: src=/etc/kubernetes/admin.conf dest=$HOME/.kube/config owner=root group=root
+  

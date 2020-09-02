@@ -1,0 +1,41 @@
+- name: download docker repo
+  shell: "curl http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -o /etc/yum.repos.d/docker.repo"
+
+- name: makecache
+  shell: "yum makecache fast"
+
+- name: install docker-ce
+  yum:  
+    name: docker-ce 
+
+- name: star docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+    
+- name: config docker
+  template: src=daemon.json dest=/etc/docker/daemon.json
+
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+    
+- name: add k8s repo
+  template: src=kubernetes.repo dest=/etc/yum.repos.d/kubernetes.repo
+
+- name: install kubernetes
+  yum: 
+    name: 
+        - kubernetes-cni
+        - kubeadm 
+        - kubelet
+        - kubectl
+        
+- name: start k8s
+  service:
+    name: kubelet
+    state: started
+    enabled: yes
+ 

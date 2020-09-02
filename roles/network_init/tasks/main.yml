@@ -1,0 +1,11 @@
+- name: network init
+  template: src=kube-flannel.yml dest=/root/k8s/
+
+- name: apply flannel
+  shell:  "kubectl apply -f /root/k8s/kube-flannel.yml"
+
+- name: Dashboard
+  template: src=recommended.yaml dest=/root/k8s/
+
+- name: apply Dashboard
+  shell:  "kubectl apply -f /root/k8s/recommended.yaml"

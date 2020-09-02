@@ -1,0 +1,5 @@
+- name: add node
+  shell: "bash /root/k8s/node.sh"
+  
+- name: del node's cert
+  file: name=/root/k8s/node.sh state=absent
